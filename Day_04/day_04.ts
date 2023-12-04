@@ -75,7 +75,7 @@ async function day4_1(fileName:string){
             return acc;
         }
     },0);
-    console.log(ret);
+    console.log(`Day 4, problem 1: ${ret}`);
 };
 
 day4_1('./input.txt');
@@ -92,7 +92,7 @@ async function day4_2(fileName:string){
         total += games[i].tickets;
         //console.log(`Game ${i+1}: Adding ${games[i].tickets} to total. Current total: ${total}`);
     }
-    console.log(total);
+    console.log(`Day 4, problem 2: ${total}`);
 
 }
 

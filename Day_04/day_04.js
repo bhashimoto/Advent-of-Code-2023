@@ -145,7 +145,7 @@ function day4_1(fileName) {
                             return acc;
                         }
                     }, 0);
-                    console.log(ret);
+                    console.log("Day 4, problem 1: ".concat(ret));
                     return [2 /*return*/];
             }
         });
@@ -169,7 +169,7 @@ function day4_2(fileName) {
                         total += games[i].tickets;
                         //console.log(`Game ${i+1}: Adding ${games[i].tickets} to total. Current total: ${total}`);
                     }
-                    console.log(total);
+                    console.log("Day 4, problem 2: ".concat(total));
                     return [2 /*return*/];
             }
         });
