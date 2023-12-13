@@ -40,21 +40,20 @@ var games = file.split('\r\n').map(function (game) {
     };
 });
 var result = calculateWinnings(games);
+console.log(result);
+console.log("".concat(result === 253473930, ", expected 253473930"));
 fs.writeFile('./out.json', JSON.stringify(games), function (err) {
     if (err) {
         console.error(err);
     }
 });
-console.log(result);
-console.log(games.reduce(function (acc, curr) { return acc + curr.winnings; }, 0));
-console.log("".concat(result === 253473930, ", expected 253473930"));
 function calculateWinnings(games) {
     games.sort(function (a, b) {
         if (a.strength !== b.strength) {
             return b.strength - a.strength;
         }
         else {
-            for (var i = 0; i < a.hand.length; i++) {
+            for (var i = 0; i < a.handValue.length; i++) {
                 if (a.handValue[i] !== b.handValue[i]) {
                     return b.handValue[i] - a.handValue[i];
                 }
@@ -79,7 +78,7 @@ function mapValues(hand, problem) {
                 return 12;
             case 'J':
                 if (problem === 2) {
-                    return 1;
+                    return 0;
                 }
                 else {
                     return 11;
@@ -139,15 +138,12 @@ function calcStrength(hand, round) {
         }
     }
     else if (countCounts.has(2)) {
-        if (parseInt(countCounts.get(2)) === 2) {
+        if (countCounts.get(2) === 2) {
             ret = 2;
         }
         else {
             ret = 1;
         }
-    }
-    else {
-        //console.log(`Hand ${hand} has 1`);
     }
     return ret;
 }

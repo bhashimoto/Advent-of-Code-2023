@@ -18,14 +18,14 @@ const games = file.split('\r\n').map((game:string) => {
 
 
 const result = calculateWinnings(games);
+console.log(result);
+console.log(`${result === 253473930}, expected 253473930`);
+
 fs.writeFile('./out.json', JSON.stringify(games), err =>{
     if(err){
         console.error(err);
     }
 })
-console.log(result);
-console.log(games.reduce((acc, curr) => acc + curr.winnings,0));
-console.log(`${result === 253473930}, expected 253473930`);
 
 
 function calculateWinnings(games):number{
@@ -33,7 +33,7 @@ function calculateWinnings(games):number{
         if(a.strength !== b.strength){
             return b.strength - a.strength;
         } else {
-            for(let i = 0; i < a.hand.length; i++){
+            for(let i = 0; i < a.handValue.length; i++){
                 if(a.handValue[i] !== b.handValue[i]){
                     return b.handValue[i] - a.handValue[i];
                 }
@@ -60,7 +60,7 @@ function mapValues(hand:string, problem:number):number[]{
                 return 12;
             case 'J':
                 if(problem === 2){
-                    return 1;
+                    return 0;
                 } else {
                     return 11;
                 };
@@ -74,13 +74,13 @@ function mapValues(hand:string, problem:number):number[]{
 
 function calcStrength(hand:string, round:number):number {
     var ret:number = 0;
-    const counts = hand.split('').reduce((acc, obj) =>{
+    const counts = hand.split('').reduce((acc, obj:string) =>{
         if(!acc.has(obj)){
             acc.set(obj, 0);
         }
-        acc.set(obj, acc.get(obj) + 1);
+        acc.set(obj, acc.get(obj)! + 1);
         return acc;
-    }, new Map());
+    }, new Map<string, number>());
     
     if (round === 2 && counts.has('J')) {
         const filteredJ = [...counts.entries()].filter((entry) => entry[0] !== 'J');
@@ -89,40 +89,40 @@ function calcStrength(hand:string, round:number):number {
             const highest = filteredJ.reduce((acc, curr) => {
                 return curr[1] > acc[1] ? curr : acc
             },['',0]);
-            counts.set(highest[0], counts.get(highest[0]) + counts.get('J'));
+            counts.set(highest[0], counts.get(highest[0])! + counts.get('J')!);
             //console.log(`Hand: ${hand}, Highest: ${highest}, new count: ${counts.get(highest[0])}`);
             counts.delete('J');
         } else {
             return 6; // hand is JJJJJ
         }
     }
-    let countCounts = new Map();
+    let countCounts = new Map<number, number>();
     counts.forEach((value, key, map) => {
         if(!countCounts.has(value)){
             countCounts.set(value, 0);
         }
-        countCounts.set(value, countCounts.get(value)+1);
+        countCounts.set(value, countCounts.get(value)! + 1);
     });
     
     //console.log(countCounts);
-    if(countCounts.has(5)) {
-        ret =  6;
-    } else if(countCounts.has(4)) {
+    if (countCounts.has(5)) {
+        ret = 6;
+    } else if (countCounts.has(4)) {
         ret = 5;
-    } else if(countCounts.has(3)) {
-        if(countCounts.has(2)){
-            ret =  4;
+    } else if (countCounts.has(3)) {
+        if (countCounts.has(2)) {
+            ret = 4;
         } else {
-            ret =  3;
+            ret = 3;
         }
-    } else if(countCounts.has(2)) {
-        if(parseInt(countCounts.get(2)) === 2){
-            ret =  2;
-        } else{
-            ret =  1;
+    } else if (countCounts.has(2)) {
+        if (countCounts.get(2) === 2) {
+            ret = 2;
+        } else {
+            ret = 1;
         }
-    } else{ 
-        //console.log(`Hand ${hand} has 1`);
     }
+
     return ret;
+
 }
